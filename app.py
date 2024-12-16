@@ -9,11 +9,11 @@ pygame.init()
 
 # Start on theme and background
 
-pygame.display.set_caption("Welcome to a random pygame")
+pygame.display.set_caption("Welcome to a random pygame") #This is the app's name
 
-screen_width = 800
-screen_height = 500
-screen = pygame.display.set_mode((screen_width,screen_height))
+screen_width = 1500
+screen_height = 1000
+screen = pygame.display.set_mode((screen_width,screen_height)) #You need to use this to activate the screen, adjust later
 
 running = True
 while running:
@@ -21,7 +21,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((0, 55, 200))
+    screen.fill((0, 55, 200)) #Change the background to most likey a sky with clouds
 
     pygame.display.flip()
 
