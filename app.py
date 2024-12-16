@@ -2,18 +2,18 @@ import pygame
 
 pygame.init()
 
-#Plan: start by making a background
-# What is the theme?
-# Add gameplay: make an rpg(what should the rpg be? Decide later)
-# Add way to win: (world domination? beat the bbeg?)
+#Plan: Make a background
+#What is the theme?
+#Work on gameplay
+#Add way to win
 
-# Start on theme and background
+#Start on background
 
-pygame.display.set_caption("Welcome to a random pygame") #This is the app's name
+pygame.display.set_caption("Random Pygame") #This is the name of the window
 
 screen_width = 1500
 screen_height = 1000
-screen = pygame.display.set_mode((screen_width,screen_height)) #You need to use this to activate the screen, adjust later
+screen = pygame.display.set_mode((screen_width,screen_height))
 
 running = True
 while running:
@@ -21,7 +21,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((0, 55, 200)) #Change the background to most likey a sky with clouds
+    screen.fill((0,55,200)) #Adds color(Plan to change background)
 
     pygame.display.flip()
 
