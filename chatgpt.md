@@ -1,5 +1,5 @@
 # ChatGPT Coding Diary
-Project Name: KSC
+Project Name: 
 Date: 12/3
 
 ## 1. Task/Problem Description
