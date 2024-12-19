@@ -1,31 +1,33 @@
-import sys
-
-# Game variables
-player_name = "Hero"
 player_health = 100
 player_strength = 10
 player_inventory = []
-player_money = 50  # Starting money
+player_money = 50
 
-enemy_health = 90  # Monster's health
+character_ascii = [
+    "  O  ",
+    " /|\\ ",
+    " / \\ ",
+    " You haha "
+]
 
-# Define the Player class
+merchant_ascii = [
+    "  [$]  ",
+    " /|\\  ",
+    " / \\  ",
+    " Merchant "
+]
+
 class Player:
-    def __init__(self, name, health, strength, money):
+    def __init__(self, name):
         self.name = name
-        self.health = health
-        self.strength = strength
+        self.health = player_health
+        self.strength = player_strength
         self.inventory = []
-        self.money = money
+        self.money = player_money
 
     def display_stats(self):
-        health_text = f"Health: {self.health}"
-        strength_text = f"Strength: {self.strength}"
-        inventory_text = f"Inventory: {', '.join(self.inventory) if self.inventory else 'Empty'}"
-        money_text = f"Money: ${self.money}"
-        return health_text, strength_text, inventory_text, money_text
+        return f"Health: {self.health}\nStrength: {self.strength}\nInventory: {', '.join(self.inventory) if self.inventory else 'Empty'}\nMoney: ${self.money}"
 
-# Set up locations and actions
 class Location:
     def __init__(self, name, description, actions, ascii_art=None):
         self.name = name
@@ -34,34 +36,19 @@ class Location:
         self.ascii_art = ascii_art
 
     def describe(self):
-        return f"\n{self.name}: {self.description}"
-
-    def show_ascii_art(self):
+        print(f"\n{self.name}: {self.description}")
         if self.ascii_art:
             for line in self.ascii_art:
                 print(line)
 
-# Create some locations with ASCII Art
-town_ascii = [
-    "  _____  ",
-    " |     | ",
-    " | TOWN | ",
-    " |_____| "
-]
+town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Inn", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
+    "  _____  ", " |     | ", " | TOWN | ", " |_____| "
+])
 
-forest_ascii = [
-    "   &&&   ",
-    "  &   &  ",
-    " &&  &&  ",
-    "  &   &  "
-]
+forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick herbs", "Return to town"], [
+    "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
+])
 
-town = Location("Town Square", "You are in a busy town square. People are walking around.", 
-                ["Go to the Inn", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], town_ascii)
-forest = Location("Dark Forest", "The forest is dark and full of eerie sounds. It's quiet.", 
-                  ["Fight a monster", "Pick herbs", "Return to town"], forest_ascii)
-
-# Merchant class to handle buying and selling
 class Merchant:
     def __init__(self):
         self.items_for_sale = {"Healing Potion": 20, "Sword": 50}
@@ -69,144 +56,85 @@ class Merchant:
     def show_items(self):
         return list(self.items_for_sale.keys())
 
-    def buy_item(self, player, item):
-        if item in self.items_for_sale and player.money >= self.items_for_sale[item]:
-            player.inventory.append(item)
-            player.money -= self.items_for_sale[item]
-            return f"You bought a {item}!"
-        else:
-            return "You can't afford that item or it's not available."
+    def trade(self, player, item, action):
+        if action == 'buy':
+            if item in self.items_for_sale and player.money >= self.items_for_sale[item]:
+                player.inventory.append(item)
+                player.money -= self.items_for_sale[item]
+                return f"You bought a {item}!"
+            else:
+                return "Not enough money or item unavailable."
+        elif action == 'sell':
+            if item in player.inventory:
+                player.inventory.remove(item)
+                sell_price = self.items_for_sale.get(item, 10) // 2
+                player.money += sell_price
+                return f"You sold a {item} for ${sell_price}."
+            else:
+                return "You don't have that item."
 
-    def sell_item(self, player, item):
-        if item in player.inventory:
-            player.inventory.remove(item)
-            sell_price = self.items_for_sale.get(item, 10) // 2  # Sell for half the buy price
-            player.money += sell_price
-            return f"You sold a {item} for ${sell_price}."
-        else:
-            return "You don't have that item to sell."
-
-# Main game loop
 def game_loop():
-    global player_health, player_strength, player_inventory, player_name, enemy_health, player_money
-    player = Player(player_name, player_health, player_strength, player_money)
+    player_name = input("Name your character: ").strip()
+    player = Player(player_name)
     current_location = town
     merchant = Merchant()
+    in_merchant_shop = False
 
-    in_merchant_shop = False  # To track if we're inside the merchant shop
-
-    running = True
-    while running:
+    while True:
         print("\n-------------------------")
-        # Display player stats
-        health_text, strength_text, inventory_text, money_text = player.display_stats()
-        print(health_text)
-        print(strength_text)
-        print(inventory_text)
-        print(money_text)
+        print(player.display_stats())
+        print("\nYour Character:")
+        for line in character_ascii:
+            print(line)
+        print(f"{player.name}")
 
-        # Display the location and description
-        print(current_location.describe())
+        current_location.describe()
 
-        # Show ASCII Art for the current location
-        current_location.show_ascii_art()
-
-        # Handle merchant shop interaction
-        if in_merchant_shop:
-            print("\nMerchant Shop:")
-            print("Press 'b' to buy, 's' to sell, or 'q' to leave")
-            items = merchant.show_items()
-            for i, item in enumerate(items):
-                print(f"{i+1}: {item} - ${merchant.items_for_sale[item]}")
-
-        # Player input for actions
         print("\nAvailable Actions:")
-        for i, action in enumerate(current_location.actions):
-            print(f"{i+1}: {action}")
+        for idx, action in enumerate(current_location.actions):
+            print(f"{idx+1}: {action}")
 
-        # Get player's choice
         choice = input("\nChoose an action (1-4): ").strip()
 
-        if choice == "1":
-            if current_location == town:
-                current_location = forest
-            elif current_location == forest:
-                # Fight monster (simplified example)
-                if enemy_health > 0:
-                    player.health -= 10  # Player takes damage
-                    enemy_health -= 20  # Monster takes damage
-                    player.inventory.append("Monster's Fang")
-                    print("You fought a monster!")
-        elif choice == "2":
-            if current_location == town:
-                print("You speak to the blacksmith.")
-            elif current_location == forest:
-                print("You gather herbs.")
-        elif choice == "3":
-            if current_location == town:
-                # Enter merchant shop
-                in_merchant_shop = True
-                print("You are talking to the merchant.")
-            elif current_location == forest:
-                current_location = town
-        elif choice == "4":
-            if current_location == town:
-                print("You leave the town.")
-                running = False  # End the game
-            elif current_location == forest:
-                current_location = town
+        if choice == "1" and current_location == town:
+            current_location = forest
+        elif choice == "1" and current_location == forest:
+            player.health += 10
+            print("You picked some herbs and gained 10 health!")
+        elif choice == "2" and current_location == town:
+            print("You speak to the blacksmith.")
+        elif choice == "2" and current_location == forest:
+            print("You gather herbs.")
+        elif choice == "3" and current_location == town:
+            in_merchant_shop = True
+            print("You are talking to the merchant.")
+        elif choice == "3" and current_location == forest:
+            current_location = town
+        elif choice == "4" and current_location == town:
+            print("You leave the town.")
+            break
+        elif choice == "4" and current_location == forest:
+            current_location = town
 
-        # Merchant shop actions
         if in_merchant_shop:
-            merchant_action = input("\nEnter 'b' to buy, 's' to sell, or 'q' to leave: ").strip().lower()
-            if merchant_action == 'b':
-                # Buy item logic
-                items = merchant.show_items()
-                print("\nAvailable items to buy:")
-                for i, item in enumerate(items):
-                    print(f"{i+1}: {item} - ${merchant.items_for_sale[item]}")
-                item_choice = input("\nEnter the number of the item you want to buy: ").strip()
-                try:
-                    item_index = int(item_choice) - 1
-                    if 0 <= item_index < len(items):
-                        item = items[item_index]
-                        print(merchant.buy_item(player, item))
-                    else:
-                        print("Invalid choice.")
-                except ValueError:
-                    print("Invalid input.")
-            elif merchant_action == 's':
-                # Sell item logic
+            print("\nMerchant Shop:")
+            for line in merchant_ascii:
+                print(line)
+            print("Press 'b' to buy, 's' to sell, or 'q' to leave")
+            action = input("What would you like to do? ").strip()
+
+            if action == 'b':
+                item = input(f"Enter the item to buy ({', '.join(merchant.show_items())}): ").strip()
+                print(merchant.trade(player, item, 'buy'))
+            elif action == 's':
                 if player.inventory:
-                    print("\nYour inventory:")
-                    for i, item in enumerate(player.inventory):
-                        print(f"{i+1}: {item}")
-                    item_choice = input("\nEnter the number of the item you want to sell: ").strip()
-                    try:
-                        item_index = int(item_choice) - 1
-                        if 0 <= item_index < len(player.inventory):
-                            item = player.inventory[item_index]
-                            print(merchant.sell_item(player, item))
-                        else:
-                            print("Invalid choice.")
-                    except ValueError:
-                        print("Invalid input.")
+                    item = input(f"Enter the item to sell ({', '.join(player.inventory)}): ").strip()
+                    print(merchant.trade(player, item, 'sell'))
                 else:
                     print("Your inventory is empty!")
-            elif merchant_action == 'q':
-                in_merchant_shop = False  # Leave merchant shop
-            else:
-                print("Invalid choice.")
-            
-        # Check for player or enemy death
-        if player.health <= 0:
-            print("You have been defeated!")
-            running = False
-        elif enemy_health <= 0:
-            print("You defeated the enemy!")
-            enemy_health = 90  # Reset enemy health after defeat
+            elif action == 'q':
+                in_merchant_shop = False
 
-# Start the game loop
+    print("Game Over.")
+
 game_loop()
-
-print("Game Over.")
