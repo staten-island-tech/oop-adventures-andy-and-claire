@@ -1,0 +1,29 @@
+{
+    "items": [
+        {
+            "name": "Health Potion"
+            ,"text": "Heals the user for 20 hp"
+            ,"description": "The weakest potion of healing from the alchimest. Honestly, he shouldn't have given it to you. Who would trust you with the stuff?"
+        }
+        ,{
+            "name": "Scrap Sword"
+            ,"text": "Increases player attack by 5"
+            ,"description": "This was the sword the blacksmith would throw against the wall. It would not scratch the wall, but would bounce off and hit you in the head. It is not a sword."
+        }
+        ,{
+            "name": "Leather Chestplate"
+            ,"text": "Increases armour by 5"
+            ,"description": "A basic piece of clothing. It could hide your 3 chest hairs...(Inserted Spiderman reference)"
+        }
+        ,{
+            "name": "Leather Cap"
+            ,"text": "Increases armour by 3"
+            ,"description": "The perfect way to hide your bald head. Yes I'm talking to you Mr. Whalen."
+        }
+        ,{
+            "name": "Leather Shoes"
+            ,"text": "Increases armour by 2"
+            ,"description": "SHUT UP. NO. THEY. ARE NOT. JORDANS."
+        }
+    ]
+}
