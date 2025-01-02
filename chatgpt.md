@@ -1,6 +1,6 @@
 # ChatGPT Coding Diary
-Project Name: 
-Date: 12/19
+Project Name: RPG Text based game
+Date: 1/
 
 ## 1. Task/Problem Description
 
