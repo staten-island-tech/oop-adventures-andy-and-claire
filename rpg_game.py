@@ -11,7 +11,7 @@ character_ascii = [
 ]
 
 merchant_ascii = [
-    "  [$]  ",
+    " [$]  ",
     " /|\\  ",
     " / \\  ",
     " Merchant "
@@ -41,7 +41,7 @@ class Location:
             for line in self.ascii_art:
                 print(line)
 
-town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Inn", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
+town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the forest", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
     "  _____  ", " |     | ", " | TOWN | ", " |_____| "
 ])
 
