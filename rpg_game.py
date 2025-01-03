@@ -51,7 +51,7 @@ forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick
 
 class Merchant:
     def __init__(self):
-        self.items_for_sale = {"Healing Potion": 20, "Sword": 50}
+        self.items_for_sale = {"Health Potion": 20, "Scrap Sword": 50}
 
     def show_items(self):
         return list(self.items_for_sale.keys())

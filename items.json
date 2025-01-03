@@ -17,12 +17,12 @@
         }
         ,{
             "name": "Leather Cap"
-            ,"text": "Increases armour by 3"
+            ,"text": "Increases hp by 3"
             ,"description": "The perfect way to hide your bald head. Yes I'm talking to you Mr. Whalen."
         }
         ,{
             "name": "Leather Shoes"
-            ,"text": "Increases armour by 2"
+            ,"text": "Increases hp by 2"
             ,"description": "SHUT UP. NO. THEY. ARE NOT. JORDANS."
         }
     ]
