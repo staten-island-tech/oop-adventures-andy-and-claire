@@ -1,3 +1,6 @@
+import json
+
+# Player Stats and Inventory Initialization
 player_health = 100
 player_strength = 10
 player_inventory = []
@@ -17,6 +20,13 @@ merchant_ascii = [
     " Merchant "
 ]
 
+# Load items from the JSON file
+def load_items_from_json():
+    with open('items.json', 'r') as file:
+        data = json.load(file)
+    return data['items']
+
+# Player class
 class Player:
     def __init__(self, name):
         self.name = name
@@ -28,6 +38,7 @@ class Player:
     def display_stats(self):
         return f"Health: {self.health}\nStrength: {self.strength}\nInventory: {', '.join(self.inventory) if self.inventory else 'Empty'}\nMoney: ${self.money}"
 
+# Location class
 class Location:
     def __init__(self, name, description, actions, ascii_art=None):
         self.name = name
@@ -41,6 +52,7 @@ class Location:
             for line in self.ascii_art:
                 print(line)
 
+# Town and Forest locations
 town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Forest", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
     "  _____  ", " |     | ", " | TOWN | ", " |_____| "
 ])
@@ -49,35 +61,41 @@ forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick
     "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
 ])
 
+# Merchant class using items from JSON
 class Merchant:
-    def __init__(self):
-        self.items_for_sale = {"Health Potion": 20, "Scrap Sword": 50}
+    def __init__(self, items):
+        self.items_for_sale = {item['name']: item for item in items}
 
     def show_items(self):
         return list(self.items_for_sale.keys())
 
     def trade(self, player, item, action):
         if action == 'buy':
-            if item in self.items_for_sale and player.money >= self.items_for_sale[item]:
+            if item in self.items_for_sale and player.money >= 20:  # Assuming all items cost 20 for simplicity.
                 player.inventory.append(item)
-                player.money -= self.items_for_sale[item]
+                player.money -= 20  # Fixed price for simplicity
                 return f"You bought a {item}!"
             else:
                 return "Not enough money or item unavailable."
         elif action == 'sell':
             if item in player.inventory:
                 player.inventory.remove(item)
-                sell_price = self.items_for_sale.get(item, 10) // 2
+                sell_price = 10  # Fixed price for simplicity
                 player.money += sell_price
                 return f"You sold a {item} for ${sell_price}."
             else:
                 return "You don't have that item."
 
+# Game Loop
 def game_loop():
+    # Load items from JSON
+    items = load_items_from_json()
+    # Create a merchant using the items loaded from JSON
+    merchant = Merchant(items)
+    
     player_name = input("Name your character: ").strip()
     player = Player(player_name)
     current_location = town
-    merchant = Merchant()
     in_merchant_shop = False
 
     while True:
@@ -137,4 +155,5 @@ def game_loop():
 
     print("Game Over.")
 
+# Start the game loop
 game_loop()
