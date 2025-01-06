@@ -1,4 +1,3 @@
-import json
 import random
 randomchance = [1,2,3,4,5,6,7,8,9,10]
 
@@ -53,42 +52,112 @@ forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick
     "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
 ])
 
+class slime:
+    def __init__(self, name, hp, attack, reward):
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+        self.reward = reward
+    def stats(self):
+        self.name = "Green_Slime"
+        self.hp = 25
+        self.attack = 10
+        self.reward = 20
+class littlegreengoober:
+    def __init__(self, name, hp, attack, reward):
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+        self.reward = reward
+    def stats(self):
+        self.name = "Goblin"
+        self.hp = 20
+        self.attack = 15
+        self.reward = 30
+
+
 encounterchance = random.choice(randomchance)
 if 10 == encounterchance:
     slime = [
     "  ____  ",
     " / | |\ ",
     "|   _  | ",
-    "\______/ "
+    "\______/ ",
+    "You are being attacked!"
     ]
     for line in slime:
         print (line)
+        incombat = True
+
+    
 if 5 == encounterchance:
-    #spawn enermy(littlegreengoober)
+    goblin_not_those_nuts = [
+    " \[:(]/",
+    "  / \  "
+    "You are being attacked!"
+    ]
+    for line in goblin_not_those_nuts:
+        print (line)
+        incombat = True
 
-class slime:
-    def __init__(self, name, hp, attack):
-        self.name = name
-        self.hp = hp
-        self.attack = attack
-    def stats(self, name, hp, attack,):
-        self.name = "Green_Slime"
-        self.hp = 25
-        self.attack = 10
+combatoptions = [
+    "1. Attack!",
+    "2. Items",
+    "3. Run"
+]
 
-class littlegreengoober:
-    def __init__(self, name, hp, attack, armour, speed):
-        self.name = name
-        self.hp = hp
-        self.attack = attack
-        self.armour = armour
-        self.speed = speed
-    def stats(self, name, hp, attack, armour, speed):
-        self.name = "Goblin"
-        self.hp = 20
-        self.attack = 15
-        self.armour = 0
-        self.speed = 10
+combatoptions = [
+    "1. Attack!",
+    "2. Items",
+    "3. Run"
+]
+
+if incombat:
+    while incombat:
+        for line in combatoptions:
+            print(line)
+        combatinput = input("What would you like to do? ")
+
+        if combatinput == "1":  # Attack!
+            # Subtract HP from enemy (or vice versa)
+            if current_enemy:
+                current_enemy.hp -= player_strength
+                print(f"You attack the {current_enemy.name} for {player_strength} damage!")
+
+            if current_enemy.hp <= 0:  # Enemy defeated
+                print(f"You defeated the {current_enemy.name}!")
+                player_money += current_enemy.reward  # Reward gold for defeating the enemy
+                print(f"You received 50 gold! You now have {player_money} gold.")
+                incombat = False
+
+        elif combatinput == "2":  # Use an item
+            for line in player_inventory:
+                print(line)
+            inventoryinput = input("What item would you like to use? ")
+            # Example: Use a healing potion
+            if inventoryinput == "Healing Potion":
+                player_health += 20
+                print(f"You used a Healing Potion! Your HP is now {player_health}.")
+                player_inventory.remove("Healing Potion")
+
+        elif combatinput == "3":  # Run!
+            print(f"You ran from the {current_enemy.name} like the baby you are.")
+            incombat = False  # End combat without rewards
+            current_enemy = None  # Remove the enemy from the screen and influence
+
+# If combat is finished or interrupted
+if not incombat:
+    print("Combat is over.")
+
+# Subtract HP when taking damage (e.g., from enemy attack)
+def take_damage(character, damage):
+    character.hp -= damage
+    print(f"{character.name} takes {damage} damage! Remaining HP: {character.hp}")
+
+# Example: the enemy attacks the player
+if current_enemy:
+    take_damage(player_health, current_enemy.attack)
+
 
 class Merchant:
     def __init__(self):

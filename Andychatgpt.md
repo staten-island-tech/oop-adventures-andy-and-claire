@@ -32,3 +32,135 @@ ChatGPT suggested the following: Using a for loop to print each line individuall
 
 ## 5. What did we learn
 We learned how to print lines one at a time and I will use this to make ASCII art.
+
+Date: 1/6/2024
+
+## 1. Task/Problem Description
+elif doesn't work, I don't know how to make a retreat function, I don't know how to reward players when they defeat an enemy, and I don't know how to subtract hp
+
+## 2. Original Code
+class slime:
+    def __init__(self, name, hp, attack):
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+    def stats(self, name, hp, attack,):
+        self.name = "Green_Slime"
+        self.hp = 25
+        self.attack = 10
+class littlegreengoober:
+    def __init__(self, name, hp, attack):
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+    def stats(self, name, hp, attack):
+        self.name = "Goblin"
+        self.hp = 20
+        self.attack = 15
+
+
+encounterchance = random.choice(randomchance)
+if 10 == encounterchance:
+    slime = [
+    "  ____  ",
+    " / | |\ ",
+    "|   _  | ",
+    "\______/ ",
+    "You are being attacked!"
+    ]
+    for line in slime:
+        print (line)
+        incombat = True
+
+    
+if 5 == encounterchance:
+    goblin_not_those_nuts = [
+    " \[:(]/",
+    "  / \  "
+    "You are being attacked!"
+    ]
+    for line in goblin_not_those_nuts:
+        print (line)
+        incombat = True
+
+combatoptions = [
+    "1. Attack!",
+    "2. Items",
+    "3. Run"
+]
+
+if incombat == True:
+    for line in combatoptions:
+        print (line)
+    combatinput = input("What would you like to do?")
+    if combatinput == "1":
+        #sub enemy hp - player strength
+    elif combatinput == "2":
+        for line in player_inventory:
+            print (line)
+            inventoryinput = input("What item would you like to use?")
+    elif combatinput == "3":
+        incombat == False
+        # find a way to delete the enemy without dropping the hp to 0 so they don't get rewards
+
+## 3. Interaction with Chat GPT
+How can I fix elif, make a reward system to give players gold when they kill an enemy, make a system where the player can run from the enemy and not recieve rewards but delete the enemy from the screen and remove their influence, and finally how can I subtract hp from the enemy or myself when anything takes damage?
+(Insert original code)
+
+## 4.  Chat GPT's answer
+combatoptions = [
+    "1. Attack!",
+    "2. Items",
+    "3. Run"
+]
+
+if incombat:
+    while incombat:
+        for line in combatoptions:
+            print(line)
+        combatinput = input("What would you like to do? ")
+
+        if combatinput == "1":  # Attack!
+            # Subtract HP from enemy (or vice versa)
+            if current_enemy:
+                current_enemy.hp -= player_attack
+                print(f"You attack the {current_enemy.name} for {player_attack} damage!")
+
+            if current_enemy.hp <= 0:  # Enemy defeated
+                print(f"You defeated the {current_enemy.name}!")
+                player_gold += 50  # Reward gold for defeating the enemy
+                print(f"You received 50 gold! You now have {player_gold} gold.")
+                incombat = False
+
+        elif combatinput == "2":  # Use an item
+            for line in player_inventory:
+                print(line)
+            inventoryinput = input("What item would you like to use? ")
+            # Example: Use a healing potion
+            if inventoryinput == "Healing Potion":
+                player_hp += 20
+                print(f"You used a Healing Potion! Your HP is now {player_hp}.")
+                player_inventory.remove("Healing Potion")
+
+        elif combatinput == "3":  # Run!
+            print(f"You ran from the {current_enemy.name}!")
+            incombat = False  # End combat without rewards
+            current_enemy = None
+
+
+if not incombat:
+    print("Combat is over.")
+
+
+def take_damage(character, damage):
+    character.hp -= damage
+    print(f"{character.name} takes {damage} damage! Remaining HP: {character.hp}")
+
+
+if current_enemy:
+    take_damage(player_hp, current_enemy.attack)
+
+## 5. What did I learn?
+I learned how to make a simple damage system that will allow me to defeat enemies.
+I learned how to reward players when they defeat an enemy
+I learned how to make a system that allows the player to retreat but still not recieve rewards for running
