@@ -77,12 +77,12 @@ class littlegreengoober:
 
 
 encounterchance = random.choice(randomchance)
-if 10 == encounterchance:
+if encounterchance == 10:
     slime = [
     "  ____  ",
-    " / | |\ ",
+    " / | |\\ ",
     "|   _  | ",
-    "\______/ ",
+    "\\______/ ",
     "You are being attacked!"
     ]
     for line in slime:
@@ -90,10 +90,10 @@ if 10 == encounterchance:
         incombat = True
 
     
-if 5 == encounterchance:
+if encounterchance == 5:
     goblin_not_those_nuts = [
-    " \[:(]/",
-    "  / \  "
+    " \\[:(]/",
+    "  / \\  "
     "You are being attacked!"
     ]
     for line in goblin_not_those_nuts:
@@ -112,7 +112,7 @@ combatoptions = [
     "3. Run"
 ]
 
-if incombat:
+if incombat == True:
     while incombat:
         for line in combatoptions:
             print(line)
