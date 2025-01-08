@@ -1,3 +1,5 @@
+import json
+
 player_health = 100
 player_strength = 10
 player_inventory = []
@@ -11,7 +13,7 @@ character_ascii = [
 ]
 
 merchant_ascii = [
-    "  [$]  ",
+    " [$]  ",
     " /|\\  ",
     " / \\  ",
     " Merchant "
@@ -41,8 +43,13 @@ class Location:
             for line in self.ascii_art:
                 print(line)
 
+<<<<<<< Updated upstream
 town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Forest", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
     "  _____  ", " |     | ", " | TOWN | ", " |_____| "
+=======
+town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Inn", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
+    "  ______  ", " |      | ", " | TOWN | ", " |______| "
+>>>>>>> Stashed changes
 ])
 
 forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick herbs", "Return to town"], [
