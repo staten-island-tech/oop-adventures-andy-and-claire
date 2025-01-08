@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-import json
-import os
-Player = open("./Player.json", encoding="utf8")
-playerdata = json.load(Player)
-
-class new_player:
-    def __init__(self, name):
-        self.name = name
-    def new_player():
-        name = input("Enter name: ")
-        return new_player(name)
-    
-player = new_player.new_player()
-print (new_player.__dict__)
-=======
 import random
 
 
@@ -67,7 +51,7 @@ town = Location("Town Square", "in the town full of people who don't have jobs."
     "  ______  ", " |      | ", " | TOWN | ", " |______| "
 ])
 
-forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick herbs", "Return to town"], [
+forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick herbs","Search the tall grass","Return to town"], [
     "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
 ])
 
@@ -77,100 +61,6 @@ class enemy:
         self.hp = hp
         self.attack = attack
         self.reward = reward
-
-slime = enemy(name="Slime", hp=20, attack=5, reward=20)
-goblin_not_those_nuts = enemy(name="Goblin", hp=30, attack=10, reward=40)
-
-randomchance = [1,2,3,4,5,6,7,8,9,10]
-
-encounterchance = random.choice(randomchance)
-if encounterchance == 10:
-    slime = [
-    "  ____  ",
-    " / | |\\ ",
-    "|   _  | ",
-    "\\______/ ",
-    "You are being attacked!"
-    ]
-    for line in slime:
-        print (line)
-        current_enemy = slime
-        incombat = True
-
-    
-if encounterchance == 5:
-    goblin_not_those_nuts = [
-    " \\[:(]/",
-    "  / \\  "
-    "You are being attacked!"
-    ]
-    for line in goblin_not_those_nuts:
-        print (line)
-        current_enemy = goblin_not_those_nuts
-        incombat = True
-
-combatoptions = [
-    "1. Attack!",
-    "2. Items",
-    "3. Run"
-]
-
-combatoptions = [
-    "1. Attack!",
-    "2. Items",
-    "3. Run"
-]
-
-if incombat == True:
-    while incombat:
-        for line in combatoptions:
-            print(line)
-        combatinput = input("What would you like to do? ")
-
-        if combatinput == "1":  # Attack!
-            # Subtract HP from enemy (or vice versa)
-            if current_enemy:
-                current_enemy.hp -= player_strength
-                print(f"You attack the {current_enemy.name} for {player_strength} damage!")
-
-            if current_enemy.hp <= 0:  # Enemy defeated
-                print(f"You defeated the {current_enemy.name}!")
-                player_money += current_enemy.reward  # Reward gold for defeating the enemy
-                print(f"You received 50 gold! You now have {player_money} gold.")
-                incombat = False
-
-        elif combatinput == "2":  # Use an item
-            ininventory = True
-            for line in player_inventory:
-                print(line)
-            inventoryinput = input("What item would you like to use?").lower
-            # Example: Use a healing potion
-            if inventoryinput == "healing potion" and "healing potion" in player_inventory:
-                player_health += 20
-                print(f"You used a healing potion! Your HP is now {player_health}.")
-                player_inventory.remove("healing potion")
-            if inventoryinput == "q":
-                ininventory = False
-
-
-        elif combatinput == "3":  # Run!
-            print(f"You ran from the {current_enemy.name} like the baby you are.")
-            incombat = False  # End combat without rewards
-            current_enemy = None  # Remove the enemy from the screen and influence
-
-# If combat is finished or interrupted
-    if not incombat:
-        print("Combat is over.")
-
-# Subtract HP when taking damage (e.g., from enemy attack)
-def take_damage(character, damage):
-    character.hp -= damage
-    print(f"{character.name} takes {damage} damage! Remaining HP: {character.hp}")
-
-# Example: the enemy attacks the player
-if current_enemy:
-    take_damage(player_health, current_enemy.attack)
-
 
 class Merchant:
     def __init__(self):
@@ -227,17 +117,111 @@ def game_loop():
         elif choice == "2" and current_location == town:
             print("You speak to the blacksmith.")
         elif choice == "2" and current_location == forest:
-            print("You gather herbs.")
+            print("You search the grass")
+            randomchance = [1,2,3,4,5,6,7,8,9,10]
+            encounterchance = random.choice(randomchance)
         elif choice == "3" and current_location == town:
             in_merchant_shop = True
             print("You are talking to the merchant.")
         elif choice == "3" and current_location == forest:
+            print("Returning to town")
             current_location = town
         elif choice == "4" and current_location == town:
             print("You leave the town.")
             break
         elif choice == "4" and current_location == forest:
             current_location = town
+
+        slime = enemy(name="Slime", hp=20, attack=5, reward=20)
+        goblin_not_those_nuts = enemy(name="Goblin", hp=30, attack=10, reward=40)
+
+        if encounterchance == 10:
+            slime = [
+            "  ____  ",
+            " / | |\\ ",
+            "|   _  | ",
+            "\\______/ ",
+            "You are being attacked!"
+            ]
+            for line in slime:
+                print (line)
+                current_enemy = slime
+                incombat = True
+
+    
+        if encounterchance == 5:
+            goblin_not_those_nuts = [
+            " \\[:(]/",
+            "  / \\  "
+            "You are being attacked!"
+            ]
+            for line in goblin_not_those_nuts:
+                print (line)
+                current_enemy = goblin_not_those_nuts
+                incombat = True
+
+        combatoptions = [
+            "1. Attack!",
+            "2. Items",
+            "3. Run"
+        ]
+
+        combatoptions = [
+            "1. Attack!",
+            "2. Items",
+            "3. Run"
+        ]
+
+        if incombat == True:
+            while incombat:
+                for line in combatoptions:
+                    print(line)
+                combatinput = input("What would you like to do? ")
+
+                if combatinput == "1":  # Attack!
+                # Subtract HP from enemy (or vice versa)
+                    if current_enemy:
+                        current_enemy.hp -= player_strength
+                        print(f"You attack the {current_enemy.name} for {player_strength} damage!")
+
+                if current_enemy.hp <= 0:  # Enemy defeated
+                    print(f"You defeated the {current_enemy.name}!")
+                    player_money += current_enemy.reward  # Reward gold for defeating the enemy
+                    print(f"You received 50 gold! You now have {player_money} gold.")
+                    incombat = False
+
+                elif combatinput == "2":  # Use an item
+                    ininventory = True
+                    for line in player_inventory:
+                        print(line)
+                        inventoryinput = input("What item would you like to use?").lower
+                        # Example: Use a healing potion
+                    if inventoryinput == "healing potion" and "healing potion" in player_inventory:
+                        player_health += 20
+                        print(f"You used a healing potion! Your HP is now {player_health}.")
+                        player_inventory.remove("healing potion")
+                    elif inventoryinput == "q":
+                        ininventory = False
+
+
+                elif combatinput == "3":  # Run!
+                    print(f"You ran from the {current_enemy.name} like the baby you are.")
+                    incombat = False  # End combat without rewards
+                    current_enemy = None  # Remove the enemy from the screen and influence
+
+        # If combat is finished or interrupted
+        if not incombat:
+            print("Combat is over.")
+
+        # Subtract HP when taking damage (e.g., from enemy attack)
+        def take_damage(character, damage):
+            character.hp -= damage
+            print(f"{character.name} takes {damage} damage! Remaining HP: {character.hp}")
+
+        # Example: the enemy attacks the player
+        if current_enemy:
+            take_damage(player_health, current_enemy.attack)
+
 
         if in_merchant_shop:
             print("\nMerchant Shop:")
@@ -261,4 +245,3 @@ def game_loop():
     print("Game Over.")
 
 game_loop()
->>>>>>> Andy
