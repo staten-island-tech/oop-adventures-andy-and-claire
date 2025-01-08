@@ -1,9 +1,4 @@
 import json
-<<<<<<< HEAD
-=======
-import random
-randomchance = [1,2,3,4,5,6,7,8,9,10]
->>>>>>> Andy
 
 player_health = 100
 player_strength = 10
@@ -48,61 +43,15 @@ class Location:
             for line in self.ascii_art:
                 print(line)
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
+
 town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Forest", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
     "  _____  ", " |     | ", " | TOWN | ", " |_____| "
-=======
-town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Inn", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
-    "  ______  ", " |      | ", " | TOWN | ", " |______| "
->>>>>>> Stashed changes
-=======
-town = Location("Town Square", "in the town full of people who don't have jobs.", ["Go to the Inn", "Speak to the blacksmith", "Go to the Merchant", "Leave the town"], [
-    "  ______  ", " |      | ", " | TOWN | ", " |______| "
->>>>>>> Andy
 ])
 
 forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick herbs", "Return to town"], [
     "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
 ])
 
-<<<<<<< HEAD
-=======
-encounterchance = random.choice(randomchance)
-if 10 == encounterchance:
-    #spawn enemy(slime let's say)
-if 5 == encounterchance:
-    #spawn enermy(littlegreengoober)
-
-class slime:
-    def __init__(self, name, hp, attack, armour, speed):
-        self.name = name
-        self.hp = hp
-        self.attack = attack
-        self.armour = armour
-        self.speed = speed
-    def stats(self, name, hp, attack, armour, speed):
-        self.name = "Green_Slime"
-        self.hp = 25
-        self.attack = 10
-        self.armour = 0
-        self.speed = 5
-
-class littlegreengoober:
-    def __init__(self, name, hp, attack, armour, speed):
-        self.name = name
-        self.hp = hp
-        self.attack = attack
-        self.armour = armour
-        self.speed = speed
-    def stats(self, name, hp, attack, armour, speed):
-        self.name = "Goblin"
-        self.hp = 20
-        self.attack = 15
-        self.armour = 0
-        self.speed = 10
-
->>>>>>> Andy
 class Merchant:
     def __init__(self):
         self.items_for_sale = {"Healing Potion": 20, "Sword": 50}
