@@ -1,10 +1,13 @@
 import random
-randomchance = [1,2,3,4,5,6,7,8,9,10]
+
 
 player_health = 100
 player_strength = 10
 player_inventory = []
 player_money = 50
+incombat = False
+ininventory = False
+current_enemy = None
 
 character_ascii = [
     "  O  ",
@@ -52,29 +55,17 @@ forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick
     "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
 ])
 
-class slime:
+class enemy:
     def __init__(self, name, hp, attack, reward):
         self.name = name
         self.hp = hp
         self.attack = attack
         self.reward = reward
-    def stats(self):
-        self.name = "Green_Slime"
-        self.hp = 25
-        self.attack = 10
-        self.reward = 20
-class littlegreengoober:
-    def __init__(self, name, hp, attack, reward):
-        self.name = name
-        self.hp = hp
-        self.attack = attack
-        self.reward = reward
-    def stats(self):
-        self.name = "Goblin"
-        self.hp = 20
-        self.attack = 15
-        self.reward = 30
 
+slime = enemy(name="Slime", hp=20, attack=5, reward=20)
+goblin_not_those_nuts = enemy(name="Goblin", hp=30, attack=10, reward=40)
+
+randomchance = [1,2,3,4,5,6,7,8,9,10]
 
 encounterchance = random.choice(randomchance)
 if encounterchance == 10:
@@ -87,6 +78,7 @@ if encounterchance == 10:
     ]
     for line in slime:
         print (line)
+        current_enemy = slime
         incombat = True
 
     
@@ -98,6 +90,7 @@ if encounterchance == 5:
     ]
     for line in goblin_not_those_nuts:
         print (line)
+        current_enemy = goblin_not_those_nuts
         incombat = True
 
 combatoptions = [
@@ -131,14 +124,18 @@ if incombat == True:
                 incombat = False
 
         elif combatinput == "2":  # Use an item
+            ininventory = True
             for line in player_inventory:
                 print(line)
-            inventoryinput = input("What item would you like to use? ")
+            inventoryinput = input("What item would you like to use?").lower
             # Example: Use a healing potion
-            if inventoryinput == "Healing Potion":
+            if inventoryinput == "healing potion" and "healing potion" in player_inventory:
                 player_health += 20
-                print(f"You used a Healing Potion! Your HP is now {player_health}.")
-                player_inventory.remove("Healing Potion")
+                print(f"You used a healing potion! Your HP is now {player_health}.")
+                player_inventory.remove("healing potion")
+            if inventoryinput == "q":
+                ininventory = False
+
 
         elif combatinput == "3":  # Run!
             print(f"You ran from the {current_enemy.name} like the baby you are.")
@@ -146,8 +143,8 @@ if incombat == True:
             current_enemy = None  # Remove the enemy from the screen and influence
 
 # If combat is finished or interrupted
-if not incombat:
-    print("Combat is over.")
+    if not incombat:
+        print("Combat is over.")
 
 # Subtract HP when taking damage (e.g., from enemy attack)
 def take_damage(character, damage):
