@@ -149,7 +149,7 @@ def combat():
                     if current_enemy.hp > 0 and Yourturn == False:
                         Enemyturn = True
                         player_health -= current_enemy.attack
-                        print (f"{}{}{}")
+                        print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player_health}")
 
     if not incombat:
         print("Combat is over.")
@@ -216,6 +216,9 @@ def game_loop():
         elif choice == "2" and current_location == town:
             print("You check the quests you can do.")
             #Make quests a thing in this game
+        elif choice == "2" and current_location == forest:
+            print("You search the grass")
+            encounters()
         elif choice == "3" and current_location == town:
             in_merchant_shop = True
             print("You are talking to the merchant.")
@@ -227,9 +230,7 @@ def game_loop():
             print (f"Name: {player_name} Power: {player_strength} Profits: {player_money}")
         elif choice == "4" and current_location == forest:
             current_location = town
-        elif choice == "2" and current_location == forest:
-            print("You search the grass")
-            #run (encounters)
+
 
 
         if in_merchant_shop:
