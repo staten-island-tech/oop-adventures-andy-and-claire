@@ -90,24 +90,23 @@ def load_items_from_json(filename):
     """Loads items from a JSON file."""
     try:
         with open(filename, 'r') as file:
-            data = json.load(file)  # Parse JSON data
-            return data['items']  # Return the list of items
+            data = json.load(file)  
+            return data['items']  
     except FileNotFoundError:
         print(f"Error: {filename} not found.")
-        return []  # Return an empty list if the file doesn't exist
+        return []
 
 def game_loop():
     player_name = input("Name your character: ").strip()
     player = Player(player_name)
     current_location = town
-    
-    # Load items from the JSON file
+
     merchant_items = load_items_from_json('item.json')
-    if merchant_items:  # If items were loaded successfully
+    if merchant_items:  
         merchant = Merchant(merchant_items)
     else:
         print("No items available for the merchant.")
-        return  # Exit the game if items cannot be loaded
+        return 
     
     in_merchant_shop = False
 
