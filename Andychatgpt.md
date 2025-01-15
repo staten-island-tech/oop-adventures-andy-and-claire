@@ -356,56 +356,15 @@ def take_damage(character, damage):
 if current_enemy:
     take_damage(player_health, current_enemy.attack)
 
-## 1. What is the problem?
-I don't know how to delete previous code to make the game feel more alive and less like layering text on top of each other.
+## 5. What did I learn?
+I learned how to access my data and leave no "deadcode"
+
+## 1. What's the issue?
+I would like to check my code for errors
 
 ## 2. Previous code
-No code is put here simply because I want to learn about a function
-
-## 3. Questions asked
-How can I delete previous lines in my terminal in my python ASCCII game?
-
-## 4. ChatGPT suggestions
-Clearing Lines in a Loop (Interactive Games)
-If you're building an interactive game where the screen needs to be updated regularly, you can combine the techniques above to overwrite or clear lines. For example, in a text-based game, you could clear and redraw the game state every frame.
-
-Here's an example of a simple game loop:
-
-python
-Copy code
-import time
-import os
-
-def clear():
-    if os.name == 'nt':  # For Windows
-        os.system('cls')
-    else:  # For Linux/MacOS
-        os.system('clear')
-
-def game_loop():
-    score = 0
-    while score < 5:
-        clear()  # Clear the screen each time
-        print(f"Score: {score}")
-        time.sleep(1)  # Simulate some game logic
-        score += 1
-
-game_loop()
-In this loop, clear() is called at the beginning of each iteration to refresh the screen, and the score is updated.
-
-## 5. What did I learn?
-I learned that I can use functions like /r, and cls for Windows when using os to clear the terminal to make my ASCCII game more interactive 
-
-## 1. Problem
-I am unsure of the possible errors in my code and I would like to make sure all my code works accordingly
-
-## 2. Original Code
 import random
-import os
 
-def clear():
-    if os.name == 'nt':
-        os.system('cls')
 
 player_health = 100
 player_strength = 10
@@ -461,27 +420,6 @@ forest = Location("Dark Forest", "weird forest with monsters and herbs.", ["Pick
     "   & *&&   ", "  &  * &  ", " &#  @&  && #  ", "  &   &  "
 ])
 
-questboard = Location("Questboard", "The odd jobs that the town has, you're mostly interested in combat...", ["Kill_Slimes", "Kill_Goblins"], [
-    " _____________________",
-    "|                     |",
-    "|                     |",
-    "|     QUESTSBOARD     |",
-    "|                     |",
-    "|_____________________|"
-]) 
-
-class Quests:
-    def __init__(self, task, record, prize):
-        self.task = task
-        self.record = record
-        self.prize = prize
-
-Kill_Goblins = Quests("Kill 5 Goblins", 0, 200)
-Kill_Slimes = Quests("Kill 7 Slimes", 0, 150)
-
-Kill_Goblins = False
-Kill_Slimes = False
-
 class enemy:
     def __init__(self, name, hp, attack, reward):
         self.name = name
@@ -494,7 +432,7 @@ def encounters():
     encounterchance = random.choice(randomchance)
 
     slime = enemy(name="Slime", hp=20, attack=5, reward=20)
-    goblin = enemy(name="Goblin", hp=30, attack=10, reward=40)
+    goblin_not_those_nuts = enemy(name="Goblin", hp=30, attack=10, reward=40)
 
     if encounterchance == 10:
         slime = [
@@ -506,21 +444,20 @@ def encounters():
         ]
         for line in slime:
             print (line)
-            global current_enemy
             current_enemy = slime
-            combat()
+            incombat = True
 
     
     if encounterchance == 5:
-        goblin = [
+        goblin_not_those_nuts = [
             " \\[:(]/",
             "  / \\  "
             "You are being attacked!"
         ]
-        for line in goblin:
+        for line in goblin_not_those_nuts:
             print (line)
-            current_enemy = goblin
-            combat()
+            current_enemy = goblin_not_those_nuts
+            incombat = True
                 
     else:
         print ("You don't find enemies.")
@@ -528,7 +465,6 @@ def encounters():
 def combat():
 
     Yourturn = True
-    global Enemyturn
     Enemyturn = False
 
     combatoptions = [
@@ -536,39 +472,31 @@ def combat():
         "2. Items",
         "3. Run"
         ]
-    for line in combatoptions:
-        print(line)
-        combatinput = input("What would you like to do? ")
 
-        if combatinput == "1":
-            if current_enemy:
-                current_enemy.hp -= player_strength
-                print(f"You attack the {current_enemy.name} for {player_strength} damage!")
-                Yourturn = False
+    if incombat == True:
+                while incombat:
+                    for line in combatoptions:
+                        print(line)
+                    combatinput = input("What would you like to do? ")
 
-                if current_enemy.hp <= 0:
-                    print(f"You defeated the {current_enemy.name}!")
-                    player_money += current_enemy.reward
-                    print(f"You received 50 gold! You now have {player_money} gold.")
-                    incombat = False
-                    if current_enemy.name in "goblin" and Kill_Goblins == True:
-                        Kill_Goblins.record += 1
-                        if Kill_Goblins.record == 5:
-                            player_money += Kill_Goblins.prize
-                    if current_enemy.name in "slime" and Kill_Slimes == True:
-                        Kill_Slimes.record += 1
-                        if Kill_Slimes.record == 7:
-                            player_money += Kill_Slimes.prize
-                    current_enemy = None
-                    
+                    if combatinput == "1":
+                        if current_enemy:
+                            current_enemy.hp -= player_strength
+                            print(f"You attack the {current_enemy.name} for {player_strength} damage!")
+                            Yourturn = False
 
+                    if current_enemy.hp <= 0:
+                        print(f"You defeated the {current_enemy.name}!")
+                        player_money += current_enemy.reward
+                        print(f"You received 50 gold! You now have {player_money} gold.")
+                        incombat = False
 
-                elif combatinput == "2":
-                    ininventory = True
-                    if ininventory == True:
-                        for line in player_inventory:
-                            print(line)
-                        inventoryinput = input("What item would you like to use?").lower
+                    elif combatinput == "2":
+                        ininventory = True
+                        if ininventory == True:
+                            for line in player_inventory:
+                                print(line)
+                            inventoryinput = input("What item would you like to use?").lower
                         if inventoryinput == "healing potion" and "healing potion" in player_inventory:
                             player_health += 20
                             print(f"You used a healing potion! Your HP is now {player_health}.")
@@ -578,17 +506,17 @@ def combat():
                             ininventory = False
 
 
-                elif combatinput == "3":
-                    print(f"You ran from the {current_enemy.name} like the baby you are.")
-                    incombat = False 
-                    current_enemy = None 
+                    elif combatinput == "3":
+                        print(f"You ran from the {current_enemy.name} like the baby you are.")
+                        incombat = False 
+                        current_enemy = None 
                     
-                if current_enemy.hp > 0 and Yourturn == False:
-                    Enemyturn = True
-                    player_health -= current_enemy.attack
-                    print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player_health}")
+                    if current_enemy.hp > 0 and Yourturn == False:
+                        Enemyturn = True
+                        player_health -= current_enemy.attack
+                        print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player_health}")
 
-    if not incombat:
+    if incombat == False:
         print("Combat is over.")
 
     def take_damage(character, damage):
@@ -647,21 +575,17 @@ def game_loop():
 
         if choice == "1" and current_location == town:
             current_location = forest
-        elif choice == "1" and current_location == questboard:
-            print("Quest Kill Slimes has been accepted.")
-            Kill_Slimes == True
         elif choice == "1" and current_location == forest:
             player.health += 10
             print("You picked some herbs and gained 10 health!")
         elif choice == "2" and current_location == town:
             print("You check the quests you can do.")
-            current_location = questboard
+            #Make quests
         elif choice == "2" and current_location == forest:
             print("You search the grass")
             encounters()
-        elif choice == "2" and current_location == questboard:
-            print("Quest Kill Goblins has been accepted.")
-            Kill_Goblins == True
+            if incombat == True:
+                combat()
         elif choice == "3" and current_location == town:
             in_merchant_shop = True
             print("You are talking to the merchant.")
@@ -669,12 +593,7 @@ def game_loop():
             print("Returning to town")
             current_location = town
         elif choice == "4" and current_location == town:
-            print("You leave town, left to wonder.")
-            break
-        elif choice == "4" and current_location == forest:
-            current_location = town
-        if player_money >= 1000:
-            print("You are Mr.Rich Man now, congrats! Now don't screw it up like Elon did.")
+            print("You left town")
             break
 
 
@@ -702,135 +621,94 @@ def game_loop():
 
 game_loop()
 
-## 3. What question was asked to ChatGPT?
-What possible errors reside in my code and how can I polish the code to make it organized? (insert code)
+## 3. What did I ask ChatGPT?
+Are there any errors in my code I should be aware of?
 
-## 4. ChatGPT's Response
-Your code has several areas where errors may arise, along with some organizational improvements that could make it more efficient and easier to maintain. I'll walk you through the main issues and suggestions for improvement:
+## 4. ChatGPT's response
+Your code is generally well-structured, but there are several areas where potential issues could arise. Below, I've highlighted key points and possible errors to watch out for:
 
-1. Variable Re-Assignments (Line 70 & 73)
-In the Kill_Goblins and Kill_Slimes lines:
-
-python
-Copy code
-Kill_Goblins = False
-Kill_Slimes = False
-Here, you are overriding the Kill_Goblins and Kill_Slimes instances of Quests by assigning them boolean values (False). This makes the quests unavailable for the player to track. You should remove these lines.
-
-Fix:
-
-python
-Copy code
-# Remove the line that overrides the quests
-# Kill_Goblins = False
-# Kill_Slimes = False
-2. Incorrect Comparison Operators (Line 106 & 109)
-In the combat function, there are comparisons to quest conditions that use == instead of = (which is assignment, not comparison).
-
+1. current_enemy and incombat Scope
+Problem: You're modifying current_enemy and incombat within functions, but these variables are defined globally. Modifying them locally does not affect the global state.
+Solution: Use the global keyword to modify these variables inside the functions or consider passing them as arguments to functions.
 For example:
 
 python
 Copy code
-if current_enemy.name in "goblin" and Kill_Goblins == True:
-The issue is that current_enemy.name in "goblin" will always return True because the string "goblin" is being iterated over. You should compare current_enemy.name to the string "Goblin" instead.
-
-Fix:
-
+global current_enemy, incombat
+current_enemy = slime
+incombat = True
+2. Inventory Input Error
+Problem: In the combat function, the inventoryinput is assigned incorrectly, missing parentheses on the .lower() method. This causes a TypeError as you're trying to assign a method instead of calling it.
+Solution: Add parentheses to the lower() call:
 python
 Copy code
-if current_enemy.name == "Goblin" and Kill_Goblins.record == 5:
-3. Variable Scope Issues with incombat and ininventory
-You have variables incombat and ininventory, but you're not consistently updating them correctly, which could cause scope issues or unexpected behavior in your game loop. For example, you are setting incombat = False inside the combat() function but not handling its state properly when encountering an enemy or leaving combat.
-
-Fix: Keep the state of incombat and ininventory properly managed to prevent issues in different areas of the game.
-
-4. Global State and Logic Management
-Your game relies heavily on global variables like player_health, player_strength, player_money, etc. This is generally not ideal because it can create confusion when the variables' state changes from multiple places. It’s best practice to manage these states inside the Player class itself.
-
-Fix: Move all character stats into the Player class. Update the combat and merchant functionality to refer to the player's attributes through the player object.
-
-For example:
-
+inventoryinput = input("What item would you like to use?").lower()
+3. Use of random.choice() for Encounters
+Problem: You're choosing an encounter with a fixed list [1, 2, 3, ..., 10], which works fine for generating random numbers. However, this can be simplified by choosing a random number in a specific range.
+Solution: Use random.randint() to generate a random number directly:
 python
 Copy code
-class Player:
-    def __init__(self, name, health=100, strength=10, money=50):
-        self.name = name
-        self.health = health
-        self.strength = strength
-        self.money = money
-        self.inventory = []
-
-    def display_stats(self):
-        return f"Health: {self.health}\nStrength: {self.strength}\nInventory: {', '.join(self.inventory) if self.inventory else 'Empty'}\nMoney: ${self.money}"
-Then, update all references to player_health, player_strength, and player_money to player.health, player.strength, and player.money, respectively.
-
-5. Combat Logic Issues (Inside combat() and encounters())
-The current enemy current_enemy is a list when you create an enemy encounter but it's also referenced as an object elsewhere.
-Additionally, there are issues with updating the player's health and handling combat rounds, as you're not checking properly if the player or enemy has lost.
-Fix: Ensure the current_enemy is an object of the enemy class in encounters():
-
+encounterchance = random.randint(1, 10)
+4. Combat Logic - Switching Turns
+Problem: The combat system has logic to switch turns between the player and the enemy, but you're not effectively managing the turn order. Yourturn and Enemyturn are not used consistently, which might cause unexpected behavior.
+Solution: Simplify the combat turn management. For example:
 python
 Copy code
-# Correct the enemy assignment in encounters function
-if encounterchance == 10:
-    current_enemy = slime
-    combat()
+if combatinput == "1" and current_enemy:
+    current_enemy.hp -= player_strength
+    print(f"You attack the {current_enemy.name} for {player_strength} damage!")
+    if current_enemy.hp <= 0:
+        print(f"You defeated the {current_enemy.name}!")
+        player.money += current_enemy.reward
+        incombat = False
+        continue  # Skip to the next loop iteration
 
-if encounterchance == 5:
-    current_enemy = goblin
-    combat()
-Also, update the combat() function to properly handle turns and combat logic:
-
-python
-Copy code
-# In combat() - Update player_health and enemy hp correctly
-if combatinput == "1":
-    if current_enemy:
-        current_enemy.hp -= player.strength  # player attacks enemy
-        print(f"You attack the {current_enemy.name} for {player.strength} damage!")
-
-        if current_enemy.hp <= 0:
-            print(f"You defeated the {current_enemy.name}!")
-            player.money += current_enemy.reward  # Add reward to player's money
-            print(f"You received {current_enemy.reward} gold! Your balance is now {player.money}.")
-
-# Handle the enemy's turn
 if current_enemy.hp > 0:
+    # Enemy attacks after player
     player.health -= current_enemy.attack
-    print(f"{current_enemy.name} attacked you for {current_enemy.attack} damage! Your HP: {player.health}")
-6. Input Handling Issues
-Your code has some places where input is compared directly with conditions without proper validation or handling. For example, in combat(), you ask for an input but don’t handle invalid choices (like typing something that isn’t 1, 2, or 3). You should make sure that the player's input is validated to avoid unexpected behavior.
-
-Fix:
-
-python
-Copy code
-combatinput = input("What would you like to do? ")
-while combatinput not in ["1", "2", "3"]:
-    print("Invalid choice. Please select a valid option.")
-    combatinput = input("What would you like to do? ")
-7. Class Organization
-The code could be made more organized by grouping related functionalities into relevant classes. For example, creating a Game class that manages the entire game loop, combat system, and the player's interactions with NPCs (such as merchants). This would help separate concerns and make the code easier to extend.
-
-Suggestion:
+    print(f"{current_enemy.name} attacks you for {current_enemy.attack} damage!")
+    print(f"Remaining HP: {player.health}")
+5. Misplaced take_damage Function
+Problem: The take_damage() function is nested inside the combat() function, but it doesn't seem to be called in a way that makes sense. It also takes character as an argument but is designed to modify character.hp, which is somewhat unclear.
+Solution: Move take_damage outside the combat() function, or make sure it is integrated correctly.
+Example:
 
 python
 Copy code
-class Game:
-    def __init__(self):
-        self.player = None
-        self.current_location = None
-        self.merchant = Merchant()
-
-    def start_game(self):
-        self.player = Player(input("Enter your character name: ").strip())
-        self.current_location = town
-        # Then, continue with the main game loop here...
-8. Error Handling and Code Flow
-If the player decides to buy or sell an item, the transaction is handled, but there is no error handling for invalid actions.
-Also, after selling or buying, you should print feedback to the player, so they understand what just happened.
-Fix: Improve error handling and feedback for transactions in the merchant section.
-
-## 5. What did I learn?
-I learned I have a whole handful of problems and I need to fix them while getting possible solutions to these problems
+def take_damage(character, damage):
+    character.hp -= damage
+    print(f"{character.name} takes {damage} damage! Remaining HP: {character.hp}")
+6. Merchant Inventory Interaction
+Problem: You're checking if the player has enough money to buy an item from the merchant, but the player.money is not being updated properly when the player buys an item.
+Solution: The player.money should be updated inside the trade method. You're already doing this, so ensure the return messages accurately reflect whether or not the transaction was successful.
+7. Missed String Formatting
+Problem: Some print statements are not properly formatted, making them harder to read or causing errors.
+Solution: Consider using f-strings for consistent formatting, such as:
+python
+Copy code
+print(f"You received {current_enemy.reward} gold! You now have {player.money} gold.")
+8. Lack of Proper Break in Combat Loop
+Problem: After defeating an enemy, you should break out of the combat loop immediately to avoid unnecessary turns.
+Solution: Add a break statement after the player defeats the enemy:
+python
+Copy code
+if current_enemy.hp <= 0:
+    print(f"You defeated the {current_enemy.name}!")
+    player.money += current_enemy.reward
+    print(f"You received {current_enemy.reward} gold!")
+    incombat = False
+    break  # Exit combat loop
+9. Logical Issue with current_location
+Problem: In the game loop, the player's location is changed when specific choices are made, but the current_location comparison might break when moving between areas like the town and forest.
+Solution: Use more explicit checks or methods to move between locations, and ensure that the state is managed correctly when transitioning between locations.
+Minor Fixes and Improvements:
+Inconsistent indentation in some places. Ensure consistent indentation throughout the code (e.g., 4 spaces).
+The combat loop can be simplified and refactored for better clarity, ensuring that the player's turn and the enemy's turn are handled more clearly.
+Ensure that you handle cases like empty inventories or items not available for buying or selling, providing appropriate feedback.
+Final Thoughts:
+After addressing these points, the game should run more smoothly and be more readable. Feel free to refine further based on your specific game design and logic. Let me know if you need any more specific help with any of these areas!
+## 5. What I learned
+Ok... I need to practice coding
+Like
+Holy Cow there are so many problems
+Ok. Where to start. I learned how to use global and it's purpose in code, to update data on all code

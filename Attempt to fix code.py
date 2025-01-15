@@ -21,11 +21,11 @@ merchant_ascii = [
 ]
 
 class Player:
-    def __init__(self, name, health=100, strength=10, money=50):
+    def __init__(self, name, health, strength, inventory, money):
         self.name = name
         self.health = health
         self.strength = strength
-        self.inventory = []
+        self.inventory = inventory
         self.money = money
 
     def display_stats(self):
@@ -79,7 +79,7 @@ class enemy:
         self.attack = attack
         self.reward = reward
 
-def encounters():
+def combat():
     randomchance = [1,2,3,4,5,6,7,8,9,10]
     encounterchance = random.choice(randomchance)
 
@@ -87,34 +87,32 @@ def encounters():
     goblin = enemy(name="Goblin", hp=30, attack=10, reward=40)
 
     if encounterchance == 10:
-        slime = [
+        slimeart = [
             "  ____  ",
             " / | |\\ ",
             "|   _  | ",
             "\\______/ ",
             "You are being attacked!"
         ]
-        for line in slime:
+        for line in slimeart:
             print (line)
             current_enemy = slime
             combat()
 
     
     if encounterchance == 5:
-        goblin = [
+        goblinart = [
             " \\[:(]/",
             "  / \\  ",
             "You are being attacked!"
         ]
-        for line in goblin:
+        for line in goblinart:
             print (line)
             current_enemy = goblin
             combat()
                 
     else:
         print ("You don't find enemies.")
-
-def combat(current_enemy):
 
     combatoptions = [
         "1. Attack!",
@@ -233,50 +231,42 @@ def game_loop():
 
         if choice == "1" and current_location == town:
             print("Traveling to the dark forest")
-            time.sleep(10)
+            time.sleep(1)
             clear()
             current_location = forest
         elif choice == "1" and current_location == questboard:
             print("Quest Kill Slimes has been accepted.")
             Kill_Slimes == True
-            time.sleep(10)
-            clear()
+            time.sleep(1)
             current_location = town
         elif choice == "1" and current_location == forest:
             player.health += 10
             print("You picked some herbs and gained 10 health!")
-            time.sleep(10)
-            clear()
+            time.sleep(1)
         elif choice == "2" and current_location == town:
-            clear()
             print("You check the quests you can do.")
             current_location = questboard
         elif choice == "2" and current_location == forest:
             print("You search the grass")
-            encounters()
-            time.sleep(10)
-            clear()
+            combat()
+            time.sleep(1)
         elif choice == "2" and current_location == questboard:
             print("Quest Kill Goblins has been accepted.")
             Kill_Goblins == True
-            time.sleep(10)
-            clear()
+            time.sleep(1)
         elif choice == "3" and current_location == town:
-            clear()
             in_merchant_shop = True
             print("You are talking to the merchant.")
         elif choice == "3" and current_location == forest:
             print("Returning to town")
-            time.sleep(10)
-            clear()
+            time.sleep(1)
             current_location = town
         elif choice == "4" and current_location == town:
             print("You leave town, left to wonder.")
             break
         elif choice == "4" and current_location == forest:
             print("Returning to Town")
-            time.sleep(10)
-            clear()
+            time.sleep(1)
             current_location = town
         if player.health <= 0:
             print("You unfortuantly die, Try again?")
@@ -305,6 +295,8 @@ def game_loop():
                     print("Your inventory is empty!")
             elif action == 'q':
                 in_merchant_shop = False
+
+        clear()
 
     print("Game Over.")
 
