@@ -1,3 +1,4 @@
+#Failed, don't want to give combat a name and work it out from there. Maybe if we can keep combat the way it is?
 import random
 import time
 import os
@@ -5,13 +6,8 @@ import os
 def clear():
     if os.name == 'nt':
         os.system('cls')
-
-player_health = 100
-player_strength = 10
-player_inventory = []
-player_money = 50
-incombat = False
-current_enemy = None
+    else:
+        os.system('clear')
 
 character_ascii = [
     "  O  ",
@@ -28,15 +24,17 @@ merchant_ascii = [
 ]
 
 class Player:
-    def __init__(self, name):
+    def __init__(self, name, health=100, strength=10, money=50):
         self.name = name
-        self.health = player_health
-        self.strength = player_strength
+        self.health = health
+        self.strength = strength
         self.inventory = []
-        self.money = player_money
+        self.money = money
 
     def display_stats(self):
         return f"Health: {self.health}\nStrength: {self.strength}\nInventory: {', '.join(self.inventory) if self.inventory else 'Empty'}\nMoney: ${self.money}"
+
+player = Player("",100,10,[],50)
 
 class Location:
     def __init__(self, name, description, actions, ascii_art=None):
@@ -68,6 +66,8 @@ questboard = Location("Questboard", "The odd jobs that the town has, you're most
     "|_____________________|"
 ]) 
 
+combat = Location("")
+
 class Quests:
     def __init__(self, task, record, prize):
         self.task = task
@@ -77,9 +77,6 @@ class Quests:
 Kill_Goblins = Quests("Kill 5 Goblins", 0, 200)
 Kill_Slimes = Quests("Kill 7 Slimes", 0, 150)
 
-Kill_Goblins = False
-Kill_Slimes = False
-
 class enemy:
     def __init__(self, name, hp, attack, reward):
         self.name = name
@@ -87,12 +84,12 @@ class enemy:
         self.attack = attack
         self.reward = reward
 
-def encounters():
+def combat():
     randomchance = [1,2,3,4,5,6,7,8,9,10]
     encounterchance = random.choice(randomchance)
 
-    slime = enemy(name="Slime", hp=20, attack=5, reward=20)
-    goblin = enemy(name="Goblin", hp=30, attack=10, reward=40)
+    slime = enemy("Slime", 20, 5, 20)
+    goblin = enemy("Goblin", 30, 10, 40)
 
     if encounterchance == 10:
         slime = [
@@ -100,34 +97,25 @@ def encounters():
             " / | |\\ ",
             "|   _  | ",
             "\\______/ ",
-            "You are being attacked!"
+            "You are being attacked by a slime!"
         ]
         for line in slime:
             print (line)
-            global current_enemy
             current_enemy = slime
-            combat()
 
     
     if encounterchance == 5:
         goblin = [
             " \\[:(]/",
             "  / \\  ",
-            "You are being attacked!"
+            "You are being attacked by a goblin!"
         ]
         for line in goblin:
             print (line)
             current_enemy = goblin
-            combat()
                 
     else:
         print ("You don't find enemies.")
-
-def combat():
-
-    Yourturn = True
-    global Enemyturn
-    Enemyturn = False
 
     combatoptions = [
         "1. Attack!",
@@ -140,60 +128,65 @@ def combat():
 
         if combatinput == "1":
             if current_enemy:
-                current_enemy.hp -= player_strength
-                print(f"You attack the {current_enemy.name} for {player_strength} damage!")
-                Yourturn = False
+                current_enemy.hp -= player.strength
+                print(f"You attack the {current_enemy.name} for {player.strength} damage!")
+
+                if current_enemy.hp > 0:
+                    player.health -= current_enemy.attack
+                    print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player.health}")
 
                 if current_enemy.hp <= 0:
                     print(f"You defeated the {current_enemy.name}!")
-                    player_money += current_enemy.reward
-                    print(f"You received 50 gold! You now have {player_money} gold.")
-                    incombat = False
-                    if current_enemy.name in "Goblin" and Kill_Goblins == True:
+                    player.money += current_enemy.reward
+                    print(f"You received 50 gold! You now have {player.money} gold.")
+                    if current_enemy.name == "Goblin" and Kill_Goblins.record < 5:
                         Kill_Goblins.record += 1
                         if Kill_Goblins.record == 5:
-                            player_money += Kill_Goblins.prize
-                    if current_enemy.name in "slime" and Kill_Slimes == True:
+                            player.money += Kill_Goblins.prize
+                    if current_enemy.name == "slime" and Kill_Slimes < 7:
                         Kill_Slimes.record += 1
                         if Kill_Slimes.record == 7:
-                            player_money += Kill_Slimes.prize
+                            player.money += Kill_Slimes.prize
                     current_enemy = None
+                    return current_enemy
                     
 
 
         elif combatinput == "2":
-            for line in player_inventory:
+            for line in player.inventory:
                 print(line)
-            inventoryinput = input("What item would you like to use? Type q to exit your inventory").lower
-            if inventoryinput == "healing potion" and "healing potion" in player_inventory:
-                player_health += 20
-                print(f"You used a healing potion! Your HP is now {player_health}.")
-                player_inventory.remove("healing potion")
-                Yourturn = False
+            if player.inventory == "":
+                print("I'm sorry but it seems that your inventory is empty. Please type q to exit inventory")
+            inventoryinput = input("What item would you like to use? Type q to exit your inventory").lower()
+            if inventoryinput == "healing potion" and "healing potion" in player.inventory:
+                player.health += 20
+                print(f"You used a healing potion! Your HP is now {player.health}.")
+                player.inventory.remove("healing potion")
             elif inventoryinput == "q":
                 print("Exiting inventory")
                 clear()
+                print(combatoptions)
+                combatinput = input("What would you like to do?")
 
 
         elif combatinput == "3":
             print(f"You ran from the {current_enemy.name} like the baby you are.")
-            incombat = False 
-            current_enemy = None 
-                
-    if current_enemy.hp > 0 and Yourturn == False:
-        Enemyturn = True
-        player_health -= current_enemy.attack
-        print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player_health}")
+            current_enemy = None
+            return current_enemy
+        
+        elif combatinput not in [1,2,3]:
+            print("Invalid answer, please choose an answer provided")
+            time.sleep(5)
+            clear()
+            print (combatoptions)
+            combatinput = input("What would you like to do?")
 
-    if not incombat:
-        print("Combat is over.")
-
-    def take_damage(character, damage):
-        character.hp -= damage
-        print(f"{character.name} takes {damage} damage! Remaining HP: {character.hp}")
+    def take_damage(damage):
+        player.health -= damage
+        print(f"{player.name} takes {damage} damage! Remaining HP: {player.health}")
 
     if current_enemy:
-        take_damage(player_health, current_enemy.attack)
+        take_damage(player.health, current_enemy.attack)
 
 class Merchant:
     def __init__(self):
@@ -218,10 +211,11 @@ class Merchant:
                 return f"You sold a {item} for ${sell_price}."
             else:
                 return "You don't have that item."
+        else:
+            print("That is not a valid option, please choose one from the options provided.")
 
 def game_loop():
-    player_name = input("Name your character: ").strip()
-    player = Player(player_name)
+    player.name = input("Name your character: ").strip()
     current_location = town
     merchant = Merchant()
     in_merchant_shop = False
@@ -244,52 +238,64 @@ def game_loop():
 
         if choice == "1" and current_location == town:
             print("Traveling to the dark forest")
-            time.sleep(10)
+            time.sleep(5)
             clear()
             current_location = forest
         elif choice == "1" and current_location == questboard:
             print("Quest Kill Slimes has been accepted.")
-            Kill_Slimes == True
-            time.sleep(10)
+            Kill_Slimes = True
+            time.sleep(5)
             clear()
             current_location = town
         elif choice == "1" and current_location == forest:
             player.health += 10
             print("You picked some herbs and gained 10 health!")
-            time.sleep(10)
+            time.sleep(5)
             clear()
+
+        #put the combatoption 1 in here
+
         elif choice == "2" and current_location == town:
             clear()
             print("You check the quests you can do.")
             current_location = questboard
         elif choice == "2" and current_location == forest:
             print("You search the grass")
-            encounters()
-            time.sleep(10)
+            combat()
+            time.sleep(5)
             clear()
         elif choice == "2" and current_location == questboard:
             print("Quest Kill Goblins has been accepted.")
-            Kill_Goblins == True
-            time.sleep(10)
+            Kill_Goblins = True
+            time.sleep(5)
             clear()
+
+        #put combatoption 2 here
+            
         elif choice == "3" and current_location == town:
             clear()
             in_merchant_shop = True
             print("You are talking to the merchant.")
         elif choice == "3" and current_location == forest:
             print("Returning to town")
-            time.sleep(10)
+            time.sleep(5)
             clear()
             current_location = town
+
+        #put combatoption 3 here
+
         elif choice == "4" and current_location == town:
             print("You leave town, left to wonder.")
             break
         elif choice == "4" and current_location == forest:
             print("Returning to Town")
-            time.sleep(10)
+            time.sleep(5)
             clear()
             current_location = town
-        if player_money >= 1000:
+        if player.health <= 0:
+            print("You unfortuantly die, Try again?")
+            break
+        if player.money >= 1000:
             print("You are Mr.Rich Man now, congrats! Now don't screw it up like Elon did.")
             break
 
