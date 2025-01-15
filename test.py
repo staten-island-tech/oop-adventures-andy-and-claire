@@ -23,11 +23,11 @@ merchant_ascii = [
 ]
 
 class Player:
-    def __init__(self, name, health=100, strength=10, money=50):
+    def __init__(self, name, health, strength, inventory, money):
         self.name = name
         self.health = health
         self.strength = strength
-        self.inventory = []
+        self.inventory = inventory
         self.money = money
 
     def display_stats(self):
@@ -52,7 +52,7 @@ class Location:
             for line in self.ascii_art:
                 print(line)
 
-town = Location("Town Square", "in the town full of people who don't have jobs.", ["Venture in the dark forest", "Check the quest board", "Go to the Merchant", "Look into your backpack"], [
+town = Location("Town Square", "in the town full of people who don't have jobs.", ["Venture in the dark forest", "Check the quest board", "Go to the Merchant", "Go to the inn"], [
     "  ______  ", " |      | ", " | TOWN | ", " |______| "
 ])
 
@@ -110,73 +110,73 @@ def combat():
     if encounterchance == 5:
         print(" \\[:(]/\n  / \\  \nYou are being attacked by a goblin!")
         current_enemy = goblin
-                
+
     else:
         print ("You don't find enemies.")
+        return
 
     combatoptions = [
         "1. Attack!",
         "2. Items",
         "3. Run"
         ]
-    for line in combatoptions:
-        print(line)
-        combatinput = input("What would you like to do? ")
+    print(combatoptions)
+    combatinput = input("What would you like to do? ")
 
-        if combatinput == "1":
-            if current_enemy:
-                current_enemy.hp -= player.strength
-                print(f"You attack the {current_enemy.name} for {player.strength} damage!")
+    if combatinput == "1":
+        if current_enemy:
+            current_enemy.hp -= player.strength
+            print(f"You attack the {current_enemy.name} for {player.strength} damage!")
 
-                if current_enemy.hp > 0:
-                    player.health -= current_enemy.attack
-                    print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player.health}")
+            if current_enemy.hp > 0:
+                player.health -= current_enemy.attack
+                print (f"{current_enemy.name} attacked you for {current_enemy.attack}! Remaining HP:{player.health}")
 
-                if current_enemy.hp <= 0:
-                    print(f"You defeated the {current_enemy.name}!")
-                    player.money += current_enemy.reward
-                    print(f"You received 50 gold! You now have {player.money} gold.")
-                    if current_enemy.name == "Goblin" and Kill_Goblins.activate == True:
-                        Kill_Goblins.record += 1
-                        if Kill_Goblins.record == 5:
-                            player.money += Kill_Goblins.prize
-                    if current_enemy.name == "slime" and Kill_Slimes.activate == True:
-                        Kill_Slimes.record += 1
-                        if Kill_Slimes.record == 7:
-                            player.money += Kill_Slimes.prize
-                    current_enemy = None
-                    return current_enemy
+            if current_enemy.hp <= 0:
+                print(f"You defeated the {current_enemy.name}!")
+                player.money += current_enemy.reward
+                print(f"You received 50 gold! You now have {player.money} gold.")
+                if current_enemy.name == "Goblin" and Kill_Goblins.activate == True:
+                    Kill_Goblins.record += 1
+                    if Kill_Goblins.record == 5:
+                        player.money += Kill_Goblins.prize
+                if current_enemy.name == "slime" and Kill_Slimes.activate == True:
+                    Kill_Slimes.record += 1
+                    if Kill_Slimes.record == 7:
+                        player.money += Kill_Slimes.prize
+                current_enemy = None
+                return current_enemy
                     
 
 
-        elif combatinput == "2":
-            for line in player.inventory:
-                print(line)
-            if player.inventory == []:
-                print("I'm sorry but it seems that your inventory is empty. Please type q to exit inventory")
-            inventoryinput = input("What item would you like to use? Type q to exit your inventory").lower()
-            if inventoryinput == "healing potion" and "healing potion" in player.inventory:
-                player.health += 20
-                print(f"You used a healing potion! Your HP is now {player.health}.")
-                player.inventory.remove("healing potion")
-            elif inventoryinput == "q":
-                print("Exiting inventory")
-                clear()
-                print(combatoptions)
-                combatinput = input("What would you like to do?")
-
-
-        elif combatinput == "3":
-            print(f"You ran from the {current_enemy.name} like the baby you are.")
-            current_enemy = None
-            return current_enemy
-        
-        elif combatinput not in ["1","2","3"]:
-            print("Invalid answer, please choose an answer provided")
-            time.sleep(5)
+    elif combatinput == "2":
+        for line in player.inventory:
+            print(line)
+        if player.inventory == []:
+            print("I'm sorry but it seems that your inventory is empty. Please type q to exit inventory")
+        inventoryinput = input("What item would you like to use? Type q to exit your inventory").lower()
+        if inventoryinput == "healing potion" and "healing potion" in player.inventory:
+            player.health += 20
+            print(f"You used a healing potion! Your HP is now {player.health}.")
+            player.inventory.remove("healing potion")
+        elif inventoryinput == "q":
+            print("Exiting inventory")
             clear()
-            print (combatoptions)
+            print(combatoptions)
             combatinput = input("What would you like to do?")
+
+
+    elif combatinput == "3":
+        print(f"You ran from the {current_enemy.name} like the baby you are.")
+        current_enemy = None
+        return current_enemy
+        
+    elif combatinput not in ["1","2","3"]:
+        print("Invalid answer, please choose an answer provided")
+        time.sleep(1)
+        clear()
+        print (combatoptions)
+        combatinput = input("What would you like to do?")
     if player.health <= 0:
         print("You die in the heat of the fight, Try again?")
 
@@ -230,25 +230,25 @@ def game_loop():
 
         if choice == "1" and current_location == town:
             print("Traveling to the dark forest")
-            time.sleep(5)
+            time.sleep(1)
             clear()
             current_location = forest
         elif choice == "1" and current_location == questboard:
             print("Quest Kill Slimes has been accepted.")
             Kill_Slimes.activate = True
-            time.sleep(5)
+            time.sleep(1)
             clear()
             current_location = town
         elif choice == "1" and current_location == forest:
             player.health += 10
             print("You picked some herbs and gained 10 health!")
-            time.sleep(5)
+            time.sleep(1)
             clear()
         elif choice == "1" and current_location == inn:
             player.health = 100
             player.money -= 5
             print("You rest well.")
-            time.sleep(5)
+            time.sleep(1)
             clear()
             current_location = town
         elif choice == "2" and current_location == town:
@@ -258,16 +258,16 @@ def game_loop():
         elif choice == "2" and current_location == forest:
             print("You search the grass")
             combat()
-            time.sleep(5)
+            time.sleep(1)
             clear()
         elif choice == "2" and current_location == questboard:
             print("Quest Kill Goblins has been accepted.")
             Kill_Goblins.activate = True
-            time.sleep(5)
+            time.sleep(1)
             clear()
         elif choice == "2" and current_location == inn:
             print("You left the inn.")
-            time.sleep(5)
+            time.sleep(1)
             clear()
             current_location = town
         elif choice == "3" and current_location == town:
@@ -276,22 +276,22 @@ def game_loop():
             print("You are talking to the merchant.")
         elif choice == "3" and current_location == forest:
             print("Returning to town")
-            time.sleep(5)
+            time.sleep(1)
             clear()
             current_location = town
         elif choice == "4" and current_location == town:
             print("You enter the inn")
-            time.sleep(5)
+            time.sleep(1)
             clear()
         elif choice == "4" and current_location == forest:
             print("Returning to Town")
-            time.sleep(5)
+            time.sleep(1)
             clear()
             current_location = town
         if player.health <= 0:
             print("You unfortuantly die, Try again?")
             break
-        if player.money >= 1000:
+        if player.money > 1000:
             print("You are Mr.Rich Man now, congrats! Now don't screw it up like Elon did.")
             break
 
